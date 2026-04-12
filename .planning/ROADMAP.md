@@ -46,7 +46,7 @@ Plans:
   4. User can still receive analyzable output when malformed model JSON triggers repair then deterministic fallback.
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md - strict JSON prompt contract and centralized OpenRouter client foundation
+- [x] 02-01-PLAN.md - strict JSON prompt contract and centralized OpenRouter client foundation
 - [ ] 02-02-PLAN.md - bounded retry, JSON repair, and deterministic fallback extraction orchestration
 **UI hint**: no
 
@@ -81,6 +81,6 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
-| 2. Resilient Misconception Extraction | 0/2 | Not started | - |
+| 2. Resilient Misconception Extraction | 1/2 | In Progress|  |
 | 3. Teacher Report and Aggregation | 0/0 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
