@@ -1,4 +1,5 @@
 from src.pipeline.contracts import validate_row_contract
+from src.pipeline.cleaning import clean_row
 
 
 def _valid_row() -> dict:
@@ -32,3 +33,24 @@ def test_invalid_field_types_are_dropped() -> None:
 
     assert is_valid is False
     assert reason == "invalid_field_type"
+
+
+def test_timestamp_normalization_to_utc_iso() -> None:
+    row = _valid_row()
+    row["timestamp"] = "2026-04-12T15:30:00+05:30"
+
+    cleaned, reason = clean_row(row)
+
+    assert reason is None
+    assert cleaned is not None
+    assert cleaned["timestamp"] == "2026-04-12T10:00:00Z"
+
+
+def test_invalid_timestamp_is_dropped() -> None:
+    row = _valid_row()
+    row["timestamp"] = "not-a-valid-date"
+
+    cleaned, reason = clean_row(row)
+
+    assert cleaned is None
+    assert reason == "invalid_timestamp"
