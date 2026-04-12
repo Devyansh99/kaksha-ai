@@ -85,3 +85,48 @@ def test_strategy_comparison_summary_contains_required_metrics(tmp_path) -> None
     assert "normalized_label_coverage" in summary_text
     assert "rerun_consistency" in summary_text
     assert "avg_confidence" in summary_text
+
+
+def test_strategy_comparison_is_deterministic_across_runs() -> None:
+    rows = [
+        {
+            "student_id": "S-2",
+            "concept": "Fractions",
+            "question_text": "Q2",
+            "student_answer": "A2",
+        },
+        {
+            "student_id": "S-1",
+            "concept": "Fractions",
+            "question_text": "Q1",
+            "student_answer": "A1",
+        },
+    ]
+
+    def analyzer(prompt: str, row: dict) -> dict:
+        if "Few-shot examples" in prompt:
+            return {
+                "status": "ok",
+                "misconceptions": [
+                    {
+                        "label": "denominator error",
+                        "rationale": "added denominators",
+                        "confidence": 0.82,
+                    }
+                ],
+            }
+        return {
+            "status": "json_repaired",
+            "misconceptions": [
+                {
+                    "label": "structure confusion",
+                    "rationale": "concept mismatch",
+                    "confidence": 0.63,
+                }
+            ],
+        }
+
+    first = compare_prompt_strategies(rows, analyzer)
+    second = compare_prompt_strategies(list(reversed(rows)), analyzer)
+
+    assert first == second
