@@ -12,7 +12,8 @@ This roadmap delivers a reliable prototype pipeline in four practical phases: es
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering. (completed 2026-04-12)
+- [x] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering.
+ (completed 2026-04-12)
 - [ ] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience.
 - [ ] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
 - [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
@@ -43,7 +44,10 @@ Plans:
   2. User can execute analysis against OpenRouter Qwen 3.6 using env-var API key configuration.
   3. User can observe bounded retry behavior on timeout or service errors without pipeline crashes.
   4. User can still receive analyzable output when malformed model JSON triggers repair then deterministic fallback.
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 02-01-PLAN.md - strict JSON prompt contract and centralized OpenRouter client foundation
+- [ ] 02-02-PLAN.md - bounded retry, JSON repair, and deterministic fallback extraction orchestration
 **UI hint**: no
 
 ### Phase 3: Teacher Report and Aggregation
@@ -77,6 +81,6 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
-| 2. Resilient Misconception Extraction | 0/0 | Not started | - |
+| 2. Resilient Misconception Extraction | 0/2 | Not started | - |
 | 3. Teacher Report and Aggregation | 0/0 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
