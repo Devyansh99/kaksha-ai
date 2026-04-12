@@ -74,6 +74,8 @@ def test_report_includes_normalized_labels_and_confidence_bands() -> None:
 
     by_confidence = {item["confidence_rounded"]: item for item in identified}
     assert by_confidence[0.39]["confidence_band"] == "low"
+    assert by_confidence[0.39]["raw_label"] == "added denominators"
+    assert by_confidence[0.39]["normalized_label"] == "Denominator addition"
     assert by_confidence[0.4]["confidence_band"] == "medium"
     assert by_confidence[0.74]["confidence_band"] == "medium"
     assert by_confidence[0.75]["confidence_band"] == "high"
