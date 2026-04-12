@@ -7,6 +7,15 @@ from src.pipeline.report_aggregation import (
     aggregate_by_student_concept,
     build_cohort_summary,
 )
+from src.pipeline.taxonomy_normalization import normalize_label
+
+
+def _confidence_band(confidence: float) -> str:
+    if confidence < 0.40:
+        return "low"
+    if confidence < 0.75:
+        return "medium"
+    return "high"
 
 
 def _sorted_identified_misconceptions(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -14,27 +23,49 @@ def _sorted_identified_misconceptions(items: list[dict[str, Any]]) -> list[dict[
     for item in items:
         label = str(item.get("label", ""))
         rationale = str(item.get("rationale", ""))
-        key = (label, rationale)
+        normalized = normalize_label(label)
+        normalized_label = str(normalized.get("normalized_label", "Uncategorized"))
+        key = (normalized_label, rationale)
         confidence = float(item.get("confidence", 0.0))
+        rounded_confidence = round(confidence, 2)
 
         existing = grouped.get(key)
         if existing is None or confidence > existing["confidence"]:
             grouped[key] = {
-                "label": label,
+                "label": normalized_label,
+                "raw_label": label,
+                "normalized_label": normalized_label,
+                "taxonomy_group": str(normalized.get("taxonomy_group", "Uncategorized")),
+                "normalization_reason": str(
+                    normalized.get("normalization_reason", "no_taxonomy_match")
+                ),
                 "rationale": rationale,
                 "confidence": confidence,
+                "confidence_rounded": rounded_confidence,
+                "confidence_band": _confidence_band(rounded_confidence),
                 "evidence_snippets": [],
             }
 
     normalized = list(grouped.values())
-    normalized.sort(key=lambda entry: (entry["label"], entry["rationale"], -entry["confidence"]))
+    normalized.sort(
+        key=lambda entry: (
+            entry["normalized_label"],
+            entry["rationale"],
+            -entry["confidence"],
+        )
+    )
     return normalized
 
 
 def _row_contains_label(row: dict[str, Any], label: str) -> bool:
     for misconception in row.get("misconceptions", []):
-        if isinstance(misconception, dict) and str(misconception.get("label", "")) == label:
-            return True
+        if isinstance(misconception, dict):
+            row_label = str(misconception.get("label", ""))
+            if row_label == label:
+                return True
+            normalized_label = normalize_label(row_label).get("normalized_label", "Uncategorized")
+            if str(normalized_label) == label:
+                return True
     return False
 
 
@@ -115,13 +146,25 @@ def build_teacher_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
         top_items: list[dict[str, Any]] = []
         for item in cohort_summary[concept]:
             label = str(item["label"])
+            normalized = normalize_label(label)
+            normalized_label = str(normalized.get("normalized_label", "Uncategorized"))
+            avg_confidence = float(item["avg_confidence"])
+            avg_confidence_rounded = round(avg_confidence, 2)
             top_items.append(
                 {
-                    "label": label,
+                    "label": normalized_label,
+                    "raw_label": label,
+                    "normalized_label": normalized_label,
+                    "taxonomy_group": str(normalized.get("taxonomy_group", "Uncategorized")),
+                    "normalization_reason": str(
+                        normalized.get("normalization_reason", "no_taxonomy_match")
+                    ),
                     "occurrences": int(item["occurrences"]),
                     "affected_students": int(item["affected_students"]),
-                    "avg_confidence": float(item["avg_confidence"]),
-                    "evidence_snippets": _collect_evidence_snippets(concept_rows, label),
+                    "avg_confidence": avg_confidence,
+                    "avg_confidence_rounded": avg_confidence_rounded,
+                    "confidence_band": _confidence_band(avg_confidence_rounded),
+                    "evidence_snippets": _collect_evidence_snippets(concept_rows, normalized_label),
                 }
             )
         cohort[concept] = {"top_misconceptions": top_items}
