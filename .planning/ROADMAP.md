@@ -30,8 +30,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. User can confirm that only incorrect submissions are passed forward for misconception analysis.
 **Plans**: 2 plans
 Plans:
-- [ ] 01-01-PLAN.md - contract validation and timestamp normalization foundation
-- [ ] 01-02-PLAN.md - incorrect-attempt filtering and structured drop logging integration
+- [x] 01-01-PLAN.md - contract validation and timestamp normalization foundation
+- [x] 01-02-PLAN.md - incorrect-attempt filtering and structured drop logging integration
 **UI hint**: no
 
 ### Phase 2: Resilient Misconception Extraction
