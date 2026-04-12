@@ -14,7 +14,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering.
  (completed 2026-04-12)
-- [x] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience. (completed 2026-04-12)
+- [x] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience.
+ (completed 2026-04-12)
 - [ ] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
 - [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
 
