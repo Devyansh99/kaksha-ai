@@ -87,7 +87,24 @@ def test_malformed_json_repair_then_fallback() -> None:
     )
     assert fallback["source"] == "fallback"
     assert fallback["status"] == "fallback_used"
-    assert fallback["misconceptions"][0]["label"]
+    assert fallback["error_code"] is None
+    assert all(
+        key in fallback
+        for key in (
+            "student_id",
+            "concept",
+            "question_text",
+            "student_answer",
+            "misconceptions",
+            "source",
+            "status",
+            "error_code",
+        )
+    )
+    assert all(
+        key in fallback["misconceptions"][0]
+        for key in ("label", "rationale", "confidence")
+    )
 
 
 def test_retry_timeout_is_bounded_and_non_crashing(monkeypatch) -> None:
@@ -119,5 +136,7 @@ def test_retry_timeout_is_bounded_and_non_crashing(monkeypatch) -> None:
     )
 
     assert attempts["count"] == 3
+    assert output["source"] == "llm"
     assert output["status"] == "retry_exhausted"
     assert output["error_code"] == "timeout"
+    assert output["misconceptions"] == []
