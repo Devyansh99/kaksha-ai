@@ -23,10 +23,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Aggregation and Reporting
 
-- [ ] **RPT-01**: User can compute mastery score (0-100) per student per concept
-- [ ] **RPT-02**: User can produce `teacher_report.json` with deterministic schema
-- [ ] **RPT-03**: User can view cohort-level concept summary of top misconceptions
-- [ ] **RPT-04**: User can view concise evidence snippets (`question_text`, `student_answer`) for each misconception finding
+- [x] **RPT-01**: User can compute mastery score (0-100) per student per concept
+- [x] **RPT-02**: User can produce `teacher_report.json` with deterministic schema
+- [x] **RPT-03**: User can view cohort-level concept summary of top misconceptions
+- [x] **RPT-04**: User can view concise evidence snippets (`question_text`, `student_answer`) for each misconception finding
 
 ### Quality Enhancements
 
@@ -70,10 +70,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LLM-02 | Phase 2 | Pending |
 | LLM-03 | Phase 2 | Pending |
 | LLM-04 | Phase 2 | Pending |
-| RPT-01 | Phase 3 | Pending |
-| RPT-02 | Phase 3 | Pending |
-| RPT-03 | Phase 3 | Pending |
-| RPT-04 | Phase 3 | Pending |
+| RPT-01 | Phase 3 | Complete |
+| RPT-02 | Phase 3 | Complete |
+| RPT-03 | Phase 3 | Complete |
+| RPT-04 | Phase 3 | Complete |
 | QLT-01 | Phase 4 | Pending |
 | QLT-02 | Phase 4 | Pending |
 | QLT-03 | Phase 4 | Pending |

@@ -16,7 +16,8 @@ Decimal phases appear between their surrounding integers in numeric order.
  (completed 2026-04-12)
 - [x] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience.
  (completed 2026-04-12)
-- [ ] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
+- [x] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
+ (completed 2026-04-12)
 - [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
 
 ## Phase Details
@@ -62,8 +63,8 @@ Plans:
   4. User can inspect concise evidence snippets (`question_text`, `student_answer`) attached to findings.
 **Plans**: 2 plans
 Plans:
-- [ ] 03-01-PLAN.md - deterministic mastery scoring and cohort ranking aggregation core
-- [ ] 03-02-PLAN.md - deterministic report assembly, writer output, and evidence snippet projection
+- [x] 03-01-PLAN.md - deterministic mastery scoring and cohort ranking aggregation core
+- [x] 03-02-PLAN.md - deterministic report assembly, writer output, and evidence snippet projection
 **UI hint**: no
 
 ### Phase 4: Quality Signals and Evaluation
@@ -86,5 +87,5 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 |-------|----------------|--------|-----------|
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
 | 2. Resilient Misconception Extraction | 2/2 | Complete    | 2026-04-12 |
-| 3. Teacher Report and Aggregation | 0/2 | Not started | - |
+| 3. Teacher Report and Aggregation | 2/2 | Complete    | 2026-04-12 |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
