@@ -12,11 +12,10 @@ Teachers get clear, per-student and per-concept misconception insights in a vali
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Ingestion enforces schema validation, timestamp normalization, malformed-drop logging, and strict incorrect-only forwarding — Phase 1 (2026-04-12)
 
 ### Active
 
-- [ ] Clean and validate `student_logs.json`, including malformed row handling and drop logging
 - [ ] Identify misconceptions from incorrect answers with strict JSON-only LLM outputs and resilient failure handling
 - [ ] Generate `teacher_report.json` keyed by student and concept with mastery score plus identified misconceptions
 
@@ -66,4 +65,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-12 after initialization*
+*Last updated: 2026-04-12 after Phase 1 completion*
