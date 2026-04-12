@@ -176,3 +176,50 @@ def test_console_summary_has_reason_counts(tmp_path, capsys) -> None:
     assert "valid_rows" in output
     assert "dropped_rows" in output
     assert "reason_counts" in output
+
+
+def test_end_to_end_pipeline_returns_only_normalized_incorrect_rows(tmp_path) -> None:
+    rows = [
+        {
+            "student_id": "S-101",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/5 + 1/5 = ?",
+            "correct_answer": "2/5",
+            "student_answer": "1/10",
+            "is_correct": False,
+            "timestamp": "2026-04-12T15:30:00+05:30",
+        },
+        {
+            "student_id": "S-102",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/5 + 2/5 = ?",
+            "correct_answer": "3/5",
+            "student_answer": "3/5",
+            "is_correct": True,
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+        {
+            "student_id": "S-103",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/5 + 3/5 = ?",
+            "correct_answer": "4/5",
+            "student_answer": "5/5",
+            "is_correct": "false",
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+    ]
+
+    input_file = tmp_path / "student_logs.json"
+    input_file.write_text(json.dumps(rows), encoding="utf-8")
+
+    forwarded, summary = run_ingestion_pipeline(
+        str(input_file), drop_log_path=str(tmp_path / "drop_log.jsonl")
+    )
+
+    assert len(forwarded) == 1
+    assert all(item["is_correct"] is False for item in forwarded)
+    assert all(item["timestamp"].endswith("Z") for item in forwarded)
+    assert summary["total_rows"] == 3
