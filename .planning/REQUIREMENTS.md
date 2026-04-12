@@ -11,8 +11,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **DATA-01**: User can run ingestion that validates required schema fields for each log row
 - [x] **DATA-02**: User can run cleaning that normalizes timestamps into a consistent parseable format
-- [ ] **DATA-03**: User can see malformed rows dropped with explicit reason logging
-- [ ] **DATA-04**: User can process only incorrect submissions for misconception analysis
+- [x] **DATA-03**: User can see malformed rows dropped with explicit reason logging
+- [x] **DATA-04**: User can process only incorrect submissions for misconception analysis
 
 ### Misconception Analysis
 
@@ -64,8 +64,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Complete |
-| DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Complete |
+| DATA-04 | Phase 1 | Complete |
 | LLM-01 | Phase 2 | Pending |
 | LLM-02 | Phase 2 | Pending |
 | LLM-03 | Phase 2 | Pending |
