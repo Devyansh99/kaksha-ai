@@ -26,6 +26,10 @@ def _iter_misconceptions(record: dict[str, Any]) -> list[dict[str, Any]]:
     return [item for item in misconceptions if isinstance(item, dict)]
 
 
+def _cohort_sort_key(item: dict[str, Any]) -> tuple[int, float, str]:
+    return (-item["occurrences"], -item["avg_confidence"], item["label"])
+
+
 def compute_mastery_score(records: list[dict[str, Any]]) -> int:
     if not records:
         return 100
@@ -137,7 +141,7 @@ def build_cohort_summary(rows: list[dict[str, Any]]) -> dict[str, list[dict[str,
                 }
             )
 
-        entries.sort(key=lambda item: (-item["occurrences"], -item["avg_confidence"], item["label"]))
+        entries.sort(key=_cohort_sort_key)
         cohort_summary[concept] = entries
 
     return cohort_summary
