@@ -18,7 +18,8 @@ Decimal phases appear between their surrounding integers in numeric order.
  (completed 2026-04-12)
 - [x] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
  (completed 2026-04-12)
-- [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
+- [x] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
+ (completed 2026-04-12)
 
 ## Phase Details
 
@@ -77,8 +78,8 @@ Plans:
   3. User can view a confidence score for each identified misconception in outputs.
 **Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md - deterministic taxonomy normalization and confidence visibility in report outputs
-- [ ] 04-02-PLAN.md - deterministic prompt strategy comparison and A/B evidence summary generation
+- [x] 04-01-PLAN.md - deterministic taxonomy normalization and confidence visibility in report outputs
+- [x] 04-02-PLAN.md - deterministic prompt strategy comparison and A/B evidence summary generation
 **UI hint**: no
 
 ## Progress
@@ -91,4 +92,4 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
 | 2. Resilient Misconception Extraction | 2/2 | Complete    | 2026-04-12 |
 | 3. Teacher Report and Aggregation | 2/2 | Complete    | 2026-04-12 |
-| 4. Quality Signals and Evaluation | 0/2 | Not started | - |
+| 4. Quality Signals and Evaluation | 2/2 | Complete    | 2026-04-12 |
