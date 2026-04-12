@@ -13,6 +13,7 @@ from src.pipeline.json_resilience import (
     deterministic_keyword_fallback,
     parse_or_repair_json,
 )
+from src.pipeline.misconception_extractor import extract_misconceptions_for_row
 
 
 def test_prompt_requires_json_only_contract() -> None:
@@ -87,3 +88,36 @@ def test_malformed_json_repair_then_fallback() -> None:
     assert fallback["source"] == "fallback"
     assert fallback["status"] == "fallback_used"
     assert fallback["misconceptions"][0]["label"]
+
+
+def test_retry_timeout_is_bounded_and_non_crashing(monkeypatch) -> None:
+    attempts = {"count": 0}
+
+    def always_timeout(prompt: str, config: OpenRouterConfig) -> dict:
+        attempts["count"] += 1
+        raise TimeoutError("simulated timeout")
+
+    monkeypatch.setattr("src.pipeline.misconception_extractor.call_openrouter", always_timeout)
+    monkeypatch.setattr("src.pipeline.misconception_extractor.time.sleep", lambda _sec: None)
+
+    config = OpenRouterConfig(
+        api_key="demo",
+        model="qwen/qwen3-235b-a22b:free",
+        timeout_seconds=0.01,
+        max_retries=2,
+        backoff_seconds=0.0,
+    )
+
+    output = extract_misconceptions_for_row(
+        {
+            "student_id": "S-9",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/4 = ?",
+            "student_answer": "2/6",
+        },
+        config,
+    )
+
+    assert attempts["count"] == 3
+    assert output["status"] == "retry_exhausted"
+    assert output["error_code"] == "timeout"
