@@ -1,6 +1,9 @@
 from src.pipeline.contracts import validate_row_contract
 from src.pipeline.cleaning import clean_row
 from src.pipeline.filtering import filter_incorrect_rows
+from src.pipeline.ingest import run_ingestion_pipeline
+
+import json
 
 
 def _valid_row() -> dict:
@@ -85,3 +88,91 @@ def test_invalid_is_correct_rows_are_dropped() -> None:
     assert forwarded == []
     assert len(dropped) == 1
     assert dropped[0]["reason_code"] == "invalid_is_correct"
+
+
+def test_drop_log_written_with_reason_codes(tmp_path) -> None:
+    rows = [
+        {
+            "student_id": "S-001",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/4 = ?",
+            "correct_answer": "3/4",
+            "student_answer": "2/6",
+            "is_correct": False,
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+        {
+            "student_id": "S-002",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/3 = ?",
+            "correct_answer": "5/6",
+            "student_answer": "2/5",
+            "is_correct": "false",
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+        {
+            "student_id": "S-003",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/3 + 1/3 = ?",
+            "correct_answer": "2/3",
+            "student_answer": "2/3",
+            "is_correct": True,
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+    ]
+
+    input_file = tmp_path / "student_logs.json"
+    input_file.write_text(json.dumps(rows), encoding="utf-8")
+    drop_log = tmp_path / "drop_log.jsonl"
+
+    forwarded, _summary = run_ingestion_pipeline(
+        str(input_file), drop_log_path=str(drop_log)
+    )
+
+    assert drop_log.exists()
+    records = [
+        json.loads(line)
+        for line in drop_log.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert len(forwarded) == 1
+    assert forwarded[0]["is_correct"] is False
+    assert any(record["reason_code"] == "invalid_is_correct" for record in records)
+
+
+def test_console_summary_has_reason_counts(tmp_path, capsys) -> None:
+    rows = [
+        {
+            "student_id": "S-001",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/4 = ?",
+            "correct_answer": "3/4",
+            "student_answer": "2/6",
+            "is_correct": False,
+            "timestamp": "2026-04-12T10:00:00Z",
+        },
+        {
+            "student_id": "S-004",
+            "subject": "Math",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/5 = ?",
+            "correct_answer": "7/10",
+            "student_answer": "6/10",
+            "is_correct": False,
+            "timestamp": "not-a-valid-date",
+        },
+    ]
+
+    input_file = tmp_path / "student_logs.json"
+    input_file.write_text(json.dumps(rows), encoding="utf-8")
+    run_ingestion_pipeline(str(input_file), drop_log_path=str(tmp_path / "drop_log.jsonl"))
+
+    output = capsys.readouterr().out
+    assert "total_rows" in output
+    assert "valid_rows" in output
+    assert "dropped_rows" in output
+    assert "reason_counts" in output
