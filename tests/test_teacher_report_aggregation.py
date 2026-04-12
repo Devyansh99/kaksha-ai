@@ -172,3 +172,65 @@ def test_report_json_is_deterministic(tmp_path) -> None:
     write_teacher_report(report_two, str(second_path))
 
     assert first_path.read_text(encoding="utf-8") == second_path.read_text(encoding="utf-8")
+
+
+def test_evidence_snippets_are_concise_and_scoped() -> None:
+    rows = [
+        {
+            "student_id": "S-1",
+            "concept": "Fractions",
+            "question_text": "Q1",
+            "student_answer": "A1",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.8}],
+            "status": "ok",
+        },
+        {
+            "student_id": "S-2",
+            "concept": "Fractions",
+            "question_text": "Q2",
+            "student_answer": "A2",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.7}],
+            "status": "json_repaired",
+        },
+        {
+            "student_id": "S-3",
+            "concept": "Fractions",
+            "question_text": "Q3",
+            "student_answer": "A3",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.6}],
+            "status": "fallback_used",
+        },
+        {
+            "student_id": "S-4",
+            "concept": "Fractions",
+            "question_text": "Q4",
+            "student_answer": "A4",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.5}],
+            "status": "ok",
+        },
+        {
+            "student_id": "S-5",
+            "concept": "Fractions",
+            "question_text": "Q5",
+            "student_answer": "A5",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.9}],
+            "status": "retry_exhausted",
+        },
+    ]
+
+    report = build_teacher_report(rows)
+
+    student_misconceptions = report["students"]["S-1"]["Fractions"]["identified_misconceptions"]
+    cohort_misconceptions = report["cohort_summary"]["Fractions"]["top_misconceptions"]
+
+    denominator_student = next(item for item in student_misconceptions if item["label"] == "Denominator")
+    denominator_cohort = next(item for item in cohort_misconceptions if item["label"] == "Denominator")
+
+    for snippet in denominator_student["evidence_snippets"] + denominator_cohort["evidence_snippets"]:
+        assert set(snippet.keys()) == {"question_text", "student_answer"}
+
+    assert len(denominator_student["evidence_snippets"]) <= 3
+    assert len(denominator_cohort["evidence_snippets"]) <= 3
+
+    all_questions = [item["question_text"] for item in denominator_cohort["evidence_snippets"]]
+    assert "Q5" not in all_questions
