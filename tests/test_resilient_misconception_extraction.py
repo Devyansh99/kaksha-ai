@@ -24,6 +24,7 @@ def test_prompt_requires_json_only_contract() -> None:
     assert "Return only valid JSON" in prompt
     assert all(key in prompt for key in REQUIRED_RESPONSE_KEYS)
     assert all(key in prompt for key in REQUIRED_MISCONCEPTION_KEYS)
+    assert "markdown fences" in prompt
 
 
 def test_openrouter_client_uses_env_config(monkeypatch) -> None:
@@ -38,6 +39,8 @@ def test_openrouter_client_uses_env_config(monkeypatch) -> None:
     payload = build_request_payload(prompt, config)
     assert payload["model"] == "qwen/qwen3-235b-a22b:free"
     assert payload["messages"][0]["content"] == prompt
+    assert payload["temperature"] == config.temperature
+    assert payload["max_tokens"] == config.max_tokens
 
     captured = {}
 
@@ -52,3 +55,4 @@ def test_openrouter_client_uses_env_config(monkeypatch) -> None:
     assert response["id"] == "mock-response"
     assert captured["config"].api_key == "demo-key"
     assert captured["payload"]["model"] == "qwen/qwen3-235b-a22b:free"
+    assert captured["payload"]["messages"][0]["content"] == prompt
