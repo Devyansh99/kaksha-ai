@@ -12,7 +12,7 @@ This roadmap delivers a reliable prototype pipeline in four practical phases: es
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering.
+- [x] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering. (completed 2026-04-12)
 - [ ] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience.
 - [ ] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
 - [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
@@ -76,7 +76,7 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Contracts and Cleaning | 0/2 | Not started | - |
+| 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
 | 2. Resilient Misconception Extraction | 0/0 | Not started | - |
 | 3. Teacher Report and Aggregation | 0/0 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
