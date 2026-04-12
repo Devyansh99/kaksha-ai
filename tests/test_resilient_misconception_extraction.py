@@ -9,6 +9,10 @@ from src.pipeline.openrouter_client import (
     call_openrouter,
     load_openrouter_config,
 )
+from src.pipeline.json_resilience import (
+    deterministic_keyword_fallback,
+    parse_or_repair_json,
+)
 
 
 def test_prompt_requires_json_only_contract() -> None:
@@ -56,3 +60,30 @@ def test_openrouter_client_uses_env_config(monkeypatch) -> None:
     assert captured["config"].api_key == "demo-key"
     assert captured["payload"]["model"] == "qwen/qwen3-235b-a22b:free"
     assert captured["payload"]["messages"][0]["content"] == prompt
+
+
+def test_malformed_json_repair_then_fallback() -> None:
+    repair_candidate = "```json\n{\"student_id\": \"S-1\", \"concept\": \"Fractions\",}\n```"
+    repaired, repair_status = parse_or_repair_json(repair_candidate)
+
+    assert repair_status == "json_repaired"
+    assert repaired is not None
+    assert repaired["student_id"] == "S-1"
+
+    broken_payload = "this is not json"
+    parsed, status = parse_or_repair_json(broken_payload)
+
+    assert parsed is None
+    assert status == "fallback_used"
+
+    fallback = deterministic_keyword_fallback(
+        {
+            "student_id": "S-2",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/4 = ?",
+            "student_answer": "2/6",
+        }
+    )
+    assert fallback["source"] == "fallback"
+    assert fallback["status"] == "fallback_used"
+    assert fallback["misconceptions"][0]["label"]
