@@ -25,6 +25,13 @@ def test_missing_required_fields_are_dropped() -> None:
     assert reason == "missing_required_field"
 
 
+def test_valid_row_passes_contract() -> None:
+    is_valid, reason = validate_row_contract(_valid_row())
+
+    assert is_valid is True
+    assert reason is None
+
+
 def test_invalid_field_types_are_dropped() -> None:
     row = _valid_row()
     row["question_text"] = 42
