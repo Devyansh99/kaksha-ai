@@ -1,0 +1,10 @@
+{
+  "cohort_summary": {},
+  "metadata": {
+    "generated_at": "deterministic",
+    "rows_excluded_retry_exhausted": 2,
+    "rows_included": 0,
+    "total_rows_processed": 2
+  },
+  "students": {}
+}

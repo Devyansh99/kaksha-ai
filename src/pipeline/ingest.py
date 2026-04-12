@@ -14,11 +14,9 @@ REASON_FIELD_MAP = {
 }
 
 
-def run_ingestion_pipeline(
-    input_path: str, drop_log_path: str = "artifacts/drop_log.jsonl"
+def run_ingestion_from_rows(
+    raw_rows: list[dict], drop_log_path: str = "artifacts/drop_log.jsonl"
 ) -> tuple[list[dict], dict]:
-    raw_rows = json.loads(Path(input_path).read_text(encoding="utf-8"))
-
     cleaned_rows: list[dict] = []
     dropped_rows: list[dict] = []
 
@@ -56,3 +54,10 @@ def run_ingestion_pipeline(
 
     print(json.dumps(summary, sort_keys=True))
     return incorrect_rows, summary
+
+
+def run_ingestion_pipeline(
+    input_path: str, drop_log_path: str = "artifacts/drop_log.jsonl"
+) -> tuple[list[dict], dict]:
+    raw_rows = json.loads(Path(input_path).read_text(encoding="utf-8"))
+    return run_ingestion_from_rows(raw_rows=raw_rows, drop_log_path=drop_log_path)

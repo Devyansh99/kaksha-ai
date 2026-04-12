@@ -33,6 +33,9 @@ def test_prompt_requires_json_only_contract() -> None:
 
 
 def test_openrouter_client_uses_env_config(monkeypatch) -> None:
+    # Mock _load_env_file to return empty dict so environment variables are used
+    monkeypatch.setattr("src.pipeline.openrouter_client._load_env_file", lambda: {})
+    
     monkeypatch.setenv("OPENROUTER_API_KEY", "demo-key")
     monkeypatch.setenv("OPENROUTER_MODEL", "qwen/qwen3-235b-a22b:free")
 

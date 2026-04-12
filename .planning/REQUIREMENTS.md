@@ -30,9 +30,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Quality Enhancements
 
-- [ ] **QLT-01**: User can normalize free-text misconception labels to a fixed taxonomy
-- [ ] **QLT-02**: User can compare two prompting strategies and record a short A/B result summary
-- [ ] **QLT-03**: User can view a confidence score per identified misconception
+- [x] **QLT-01**: User can normalize free-text misconception labels to a fixed taxonomy
+- [x] **QLT-02**: User can compare two prompting strategies and record a short A/B result summary
+- [x] **QLT-03**: User can view a confidence score per identified misconception
 
 ## v2 Requirements
 
@@ -74,9 +74,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RPT-02 | Phase 3 | Complete |
 | RPT-03 | Phase 3 | Complete |
 | RPT-04 | Phase 3 | Complete |
-| QLT-01 | Phase 4 | Pending |
-| QLT-02 | Phase 4 | Pending |
-| QLT-03 | Phase 4 | Pending |
+| QLT-01 | Phase 4 | Complete |
+| QLT-02 | Phase 4 | Complete |
+| QLT-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 15 total

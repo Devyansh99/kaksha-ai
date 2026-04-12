@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Misconception Analyzer</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; max-width: 980px; }
+    h1 { margin-bottom: 8px; }
+    p { margin-top: 0; color: #333; }
+    textarea { width: 100%; min-height: 260px; font-family: Consolas, monospace; font-size: 13px; }
+    button { margin-top: 10px; padding: 10px 14px; cursor: pointer; }
+    pre { background: #111; color: #e5e5e5; padding: 12px; overflow: auto; border-radius: 6px; }
+    .row { margin-top: 14px; }
+    .card { border: 1px solid #dcdcdc; border-radius: 8px; padding: 10px 12px; margin-top: 8px; background: #fafafa; }
+    .ok { color: #0a6e2f; }
+    .warn { color: #8a5d00; }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Misconception Analyzer API UI</h1>
+  <p>Paste rows JSON below and click Analyze. The server uses OPENROUTER_API_KEY from environment variables.</p>
+
+  <div class="row">
+    <label for="rows">Rows JSON (array of objects)</label>
+    <textarea id="rows">[
+  {
+    "student_id": "S-501",
+    "subject": "Math",
+    "concept": "Fractions",
+    "question_text": "1/2 + 1/4 = ?",
+    "correct_answer": "3/4",
+    "student_answer": "2/6",
+    "is_correct": false,
+    "timestamp": "2026-04-12T10:00:00Z"
+  },
+  {
+    "student_id": "S-502",
+    "subject": "Math",
+    "concept": "Fractions",
+    "question_text": "bad ts row",
+    "correct_answer": "1/2",
+    "student_answer": "1/3",
+    "is_correct": false,
+    "timestamp": "bad-ts"
+  }
+]</textarea>
+  </div>
+
+  <button id="run">Analyze</button>
+
+  <div class="row">
+    <strong>Flow View</strong>
+    <div id="flow" class="muted">No run yet.</div>
+  </div>
+
+  <div class="row">
+    <strong>Raw JSON Result</strong>
+    <pre id="result">Click Analyze to run...</pre>
+  </div>
+
+  <script>
+    const button = document.getElementById('run');
+    const rowsInput = document.getElementById('rows');
+    const result = document.getElementById('result');
+    const flow = document.getElementById('flow');
+
+    function renderFlow(statusCode, data) {
+      if (!data || !data.ingestion_summary) {
+        flow.innerHTML = '<div class="card warn">Could not render flow details from response.</div>';
+        return;
+      }
+
+      const ingest = data.ingestion_summary;
+      const statusCounts = data.analysis_status_counts || {};
+      const statusText = Object.keys(statusCounts).length
+        ? Object.entries(statusCounts).map(([k, v]) => `${k}: ${v}`).join(', ')
+        : 'none';
+
+      flow.innerHTML = [
+        `<div class="card"><strong>1) Ingestion & Cleaning</strong><br/>Total rows: ${ingest.total_rows} | Valid rows: ${ingest.valid_rows} | Dropped rows: ${ingest.dropped_rows}<br/>Drop reasons: ${JSON.stringify(ingest.reason_counts)}</div>`,
+        `<div class="card"><strong>2) LLM Misconception Analysis</strong><br/>Incorrect rows forwarded: ${data.incorrect_rows_forwarded} | Analyzed rows: ${data.analyzed_rows}<br/>Statuses: ${statusText}</div>`,
+        `<div class="card"><strong>3) Report Generation</strong><br/>Report path: ${data.report_path || '-'}<br/>Drop log path: ${data.drop_log_path || '-'}</div>`,
+        `<div class="card ${statusCode === 200 ? 'ok' : 'warn'}"><strong>HTTP Result:</strong> ${statusCode}</div>`
+      ].join('');
+    }
+
+    button.addEventListener('click', async () => {
+      result.textContent = 'Running...';
+      flow.textContent = 'Running...';
+      let rows;
+      try {
+        rows = JSON.parse(rowsInput.value);
+      } catch (err) {
+        result.textContent = 'Invalid JSON: ' + err.message;
+        flow.innerHTML = '<div class="card warn">Input JSON is invalid. Fix it and retry.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rows })
+        });
+        const data = await res.json();
+        result.textContent = JSON.stringify({ status: res.status, data }, null, 2);
+        renderFlow(res.status, data);
+      } catch (err) {
+        result.textContent = 'Request failed: ' + err.message;
+        flow.innerHTML = `<div class="card warn">Request failed: ${err.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -15,10 +15,7 @@ Teachers get clear, per-student and per-concept misconception insights in a vali
 - ✓ Ingestion enforces schema validation, timestamp normalization, malformed-drop logging, and strict incorrect-only forwarding — Phase 1 (2026-04-12)
 - ✓ Misconception extraction now uses strict JSON-only prompts with bounded retry, repair, and deterministic fallback behavior — Phase 2 (2026-04-12)
 - ✓ Teacher report generation now produces deterministic mastery scoring, cohort summaries, and concise evidence snippets in `teacher_report.json` — Phase 3 (2026-04-12)
-
-### Active
-
-- [ ] Phase 4 quality enhancements: taxonomy normalization, strategy comparison notes, and confidence-focused quality signals
+- ✓ Quality signals now include taxonomy normalization, confidence scoring (low/medium/high bands), and prompt strategy comparison evidence — Phase 4 (2026-04-12)
 
 ### Out of Scope
 

@@ -1,0 +1,108 @@
+{
+  "cohort_summary": {
+    "Fractions": {
+      "top_misconceptions": [
+        {
+          "affected_students": 1,
+          "avg_confidence": 0.98,
+          "avg_confidence_rounded": 0.98,
+          "confidence_band": "high",
+          "evidence_snippets": [
+            {
+              "question_text": "1/2 + 1/4 = ?",
+              "student_answer": "2/6"
+            },
+            {
+              "question_text": "1/3 + 1/6 = ?",
+              "student_answer": "2/9"
+            }
+          ],
+          "label": "Uncategorized",
+          "normalization_reason": "no_taxonomy_match",
+          "normalized_label": "Uncategorized",
+          "occurrences": 1,
+          "raw_label": "Additive Error in Numerators and Denominators",
+          "taxonomy_group": "Uncategorized"
+        },
+        {
+          "affected_students": 1,
+          "avg_confidence": 0.2,
+          "avg_confidence_rounded": 0.2,
+          "confidence_band": "low",
+          "evidence_snippets": [
+            {
+              "question_text": "1/2 + 1/4 = ?",
+              "student_answer": "2/6"
+            },
+            {
+              "question_text": "1/3 + 1/6 = ?",
+              "student_answer": "2/9"
+            }
+          ],
+          "label": "Uncategorized",
+          "normalization_reason": "no_taxonomy_match",
+          "normalized_label": "Uncategorized",
+          "occurrences": 1,
+          "raw_label": "Denominator addition misconception",
+          "taxonomy_group": "Uncategorized"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "generated_at": "deterministic",
+    "rows_excluded_retry_exhausted": 0,
+    "rows_included": 2,
+    "total_rows_processed": 2
+  },
+  "students": {
+    "S-701": {
+      "Fractions": {
+        "identified_misconceptions": [
+          {
+            "confidence": 0.2,
+            "confidence_band": "low",
+            "confidence_rounded": 0.2,
+            "evidence_snippets": [
+              {
+                "question_text": "1/2 + 1/4 = ?",
+                "student_answer": "2/6"
+              }
+            ],
+            "label": "Uncategorized",
+            "normalization_reason": "no_taxonomy_match",
+            "normalized_label": "Uncategorized",
+            "rationale": "Student appears to add denominators directly in fraction addition.",
+            "raw_label": "Denominator addition misconception",
+            "taxonomy_group": "Uncategorized"
+          }
+        ],
+        "mastery_score": 95
+      }
+    },
+    "S-702": {
+      "Fractions": {
+        "identified_misconceptions": [
+          {
+            "confidence": 0.98,
+            "confidence_band": "high",
+            "confidence_rounded": 0.98,
+            "evidence_snippets": [
+              {
+                "question_text": "1/3 + 1/6 = ?",
+                "student_answer": "2/9"
+              }
+            ],
+            "label": "Uncategorized",
+            "normalization_reason": "no_taxonomy_match",
+            "normalized_label": "Uncategorized",
+            "rationale": "The student added the numerators (1+1=2) and the denominators (3+6=9) directly, rather than finding a common denominator.",
+            "raw_label": "Additive Error in Numerators and Denominators",
+            "taxonomy_group": "Uncategorized"
+          }
+        ],
+        "mastery_score": 76
+      }
+    }
+  }
+}

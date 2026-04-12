@@ -3,3 +3,10 @@ venv
 __pycache__/
 *.pyc
 .pytest_cache/
+PIPELINE_COMPLETION.md
+PROJECT_COMPLETION.md
+QUICK_START.md
+QUICK_REFERENCE.md
+WEB_INPUT_OUTPUT.md
+WHERE_IS_LLM.md
+ANSWER.md

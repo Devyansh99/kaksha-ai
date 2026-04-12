@@ -58,6 +58,20 @@ def extract_misconceptions_for_row(row: dict, config: OpenRouterConfig) -> dict:
     for attempt in range(attempt_limit):
         try:
             response = call_openrouter(prompt, config)
+            parsed, status = parse_or_repair_json(_extract_content(response))
+            if parsed is not None:
+                record = _base_record(row)
+                record["misconceptions"] = parsed.get("misconceptions", [])
+                record["source"] = "llm"
+                record["status"] = status
+                record["error_code"] = None
+                return record
+
+            # JSON parsing failed, try fallback
+            fallback = deterministic_keyword_fallback(row)
+            fallback["error_code"] = "malformed_json"
+            return fallback
+
         except TimeoutError:
             if attempt < config.max_retries:
                 time.sleep(config.backoff_seconds * (attempt + 1))
@@ -73,19 +87,6 @@ def extract_misconceptions_for_row(row: dict, config: OpenRouterConfig) -> dict:
                 time.sleep(config.backoff_seconds * (attempt + 1))
                 continue
             return _retry_exhausted(row, "service_error")
-
-        parsed, status = parse_or_repair_json(_extract_content(response))
-        if parsed is not None:
-            record = _base_record(row)
-            record["misconceptions"] = parsed.get("misconceptions", [])
-            record["source"] = "llm"
-            record["status"] = status
-            record["error_code"] = None
-            return record
-
-        fallback = deterministic_keyword_fallback(row)
-        fallback["error_code"] = "malformed_json"
-        return fallback
 
     return _retry_exhausted(row, "service_error")
 
