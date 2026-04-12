@@ -14,10 +14,11 @@ Teachers get clear, per-student and per-concept misconception insights in a vali
 
 - ✓ Ingestion enforces schema validation, timestamp normalization, malformed-drop logging, and strict incorrect-only forwarding — Phase 1 (2026-04-12)
 - ✓ Misconception extraction now uses strict JSON-only prompts with bounded retry, repair, and deterministic fallback behavior — Phase 2 (2026-04-12)
+- ✓ Teacher report generation now produces deterministic mastery scoring, cohort summaries, and concise evidence snippets in `teacher_report.json` — Phase 3 (2026-04-12)
 
 ### Active
 
-- [ ] Generate `teacher_report.json` keyed by student and concept with mastery score plus identified misconceptions
+- [ ] Phase 4 quality enhancements: taxonomy normalization, strategy comparison notes, and confidence-focused quality signals
 
 ### Out of Scope
 
@@ -43,9 +44,9 @@ Teachers get clear, per-student and per-concept misconception insights in a vali
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Use OpenRouter Qwen 3.6 free model instead of Gemini/Ollama | Gemini daily quota is exhausted; cloud free model keeps project moving without local LLM setup | — Pending |
-| Keep keyword-based mock as fallback path | Guarantees end-to-end run even when API access is unavailable | — Pending |
-| Use per-student per-concept mastery scoring in `teacher_report.json` | Matches reporting goal and success criteria in PRD | — Pending |
+| Use OpenRouter Qwen 3.6 free model instead of Gemini/Ollama | Gemini daily quota is exhausted; cloud free model keeps project moving without local LLM setup | Implemented in Phase 2 OpenRouter client flow |
+| Keep keyword-based mock as fallback path | Guarantees end-to-end run even when API access is unavailable | Implemented in Phase 2 deterministic fallback behavior |
+| Use per-student per-concept mastery scoring in `teacher_report.json` | Matches reporting goal and success criteria in PRD | Implemented in Phase 3 aggregation/report pipeline |
 
 ## Evolution
 
@@ -65,4 +66,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-12 after Phase 2 completion*
+*Last updated: 2026-04-12 after Phase 3 completion*

@@ -16,10 +16,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Misconception Analysis
 
-- [ ] **LLM-01**: User can generate strict JSON-only LLM prompts for each incorrect submission
-- [ ] **LLM-02**: User can run misconception analysis through OpenRouter Qwen 3.6 free model using env-var API key config
-- [ ] **LLM-03**: User can recover from timeout/service errors through bounded retries and error handling
-- [ ] **LLM-04**: User can recover from malformed model JSON via repair attempt then deterministic fallback analyzer
+- [x] **LLM-01**: User can generate strict JSON-only LLM prompts for each incorrect submission
+- [x] **LLM-02**: User can run misconception analysis through OpenRouter Qwen 3.6 free model using env-var API key config
+- [x] **LLM-03**: User can recover from timeout/service errors through bounded retries and error handling
+- [x] **LLM-04**: User can recover from malformed model JSON via repair attempt then deterministic fallback analyzer
 
 ### Aggregation and Reporting
 
@@ -66,10 +66,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Complete |
-| LLM-01 | Phase 2 | Pending |
-| LLM-02 | Phase 2 | Pending |
-| LLM-03 | Phase 2 | Pending |
-| LLM-04 | Phase 2 | Pending |
+| LLM-01 | Phase 2 | Complete |
+| LLM-02 | Phase 2 | Complete |
+| LLM-03 | Phase 2 | Complete |
+| LLM-04 | Phase 2 | Complete |
 | RPT-01 | Phase 3 | Complete |
 | RPT-02 | Phase 3 | Complete |
 | RPT-03 | Phase 3 | Complete |
@@ -85,4 +85,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-12 after roadmap traceability mapping*
+*Last updated: 2026-04-12 after Phase 3 completion updates*
