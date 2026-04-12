@@ -47,6 +47,14 @@ def test_mastery_score_is_bounded_and_deterministic() -> None:
         {
             "student_id": "S-1",
             "concept": "Fractions",
+            "question_text": "2/3 + 1/3 = ?",
+            "student_answer": "3/6",
+            "misconceptions": [{"label": "Reduction", "rationale": "r", "confidence": 0.5}],
+            "status": "json_repaired",
+        },
+        {
+            "student_id": "S-1",
+            "concept": "Fractions",
             "question_text": "1/3 + 1/3 = ?",
             "student_answer": "2/6",
             "misconceptions": [],
@@ -94,6 +102,18 @@ def test_cohort_summary_ranking_is_deterministic() -> None:
             "misconceptions": [{"label": "C", "rationale": "r", "confidence": 1.0}],
             "status": "retry_exhausted",
         },
+        {
+            "student_id": "S-6",
+            "concept": "Algebra",
+            "misconceptions": [{"label": "D", "rationale": "r", "confidence": 0.5}],
+            "status": "ok",
+        },
+        {
+            "student_id": "S-7",
+            "concept": "Algebra",
+            "misconceptions": [{"label": "C", "rationale": "r", "confidence": 0.5}],
+            "status": "ok",
+        },
     ]
 
     summary_first = build_cohort_summary(rows)
@@ -106,3 +126,5 @@ def test_cohort_summary_ranking_is_deterministic() -> None:
     assert first["occurrences"] == 2
     assert first["affected_students"] == 2
     assert first["avg_confidence"] == 0.7
+
+    assert [item["label"] for item in summary_first["Algebra"]] == ["C", "D"]
