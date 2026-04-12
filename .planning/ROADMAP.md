@@ -28,7 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can run cleaning that outputs consistently parseable timestamps across records.
   3. User can review malformed rows that were dropped with explicit reason logging.
   4. User can confirm that only incorrect submissions are passed forward for misconception analysis.
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md - contract validation and timestamp normalization foundation
+- [ ] 01-02-PLAN.md - incorrect-attempt filtering and structured drop logging integration
 **UI hint**: no
 
 ### Phase 2: Resilient Misconception Extraction
@@ -73,7 +76,7 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Contracts and Cleaning | 0/0 | Not started | - |
+| 1. Data Contracts and Cleaning | 0/2 | Not started | - |
 | 2. Resilient Misconception Extraction | 0/0 | Not started | - |
 | 3. Teacher Report and Aggregation | 0/0 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
