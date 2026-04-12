@@ -162,7 +162,9 @@ def test_report_json_is_deterministic(tmp_path) -> None:
 
     report_one = build_teacher_report(rows)
     report_two = build_teacher_report(rows)
+    report_three = build_teacher_report(list(reversed(rows)))
     assert report_one == report_two
+    assert report_one == report_three
     assert report_one["metadata"]["rows_excluded_retry_exhausted"] == 1
 
     first_path = tmp_path / "first.json"
