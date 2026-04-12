@@ -7,6 +7,7 @@ TAXONOMY_VERSION = "v1"
 CANONICAL_LABELS: dict[str, str] = {
     "Denominator": "Fractions",
     "Denominator addition": "Fractions",
+    "Additive error": "Fractions",
     "Structure": "Conceptual",
     "Reduction": "Fractions",
     "Sign error": "Arithmetic",
@@ -18,11 +19,17 @@ ALIAS_TO_CANONICAL: dict[str, str] = {
     "denominator error": "Denominator",
     "added denominators": "Denominator addition",
     "common denominator confusion": "Denominator",
+    "additive error (numerator and denominator)": "Additive error",
+    "additive error in numerators and denominators": "Additive error",
+    "denominator addition misconception": "Denominator addition",
+    "fraction addition structure misconception": "Structure",
+    "fraction addition structure error": "Structure",
     "structure confusion": "Structure",
     "simplification": "Reduction",
 }
 
 _LOWER_CANONICAL: dict[str, str] = {label.lower(): label for label in CANONICAL_LABELS}
+_LOWER_ALIASES: dict[str, str] = {key.lower(): val for key, val in ALIAS_TO_CANONICAL.items()}
 
 
 def normalize_label(raw_label: str) -> dict[str, Any]:
@@ -36,8 +43,8 @@ def normalize_label(raw_label: str) -> dict[str, Any]:
         if lowered in _LOWER_CANONICAL:
             canonical = _LOWER_CANONICAL[lowered]
             reason = "canonical_casefold_match"
-        elif lowered in ALIAS_TO_CANONICAL:
-            canonical = ALIAS_TO_CANONICAL[lowered]
+        elif lowered in _LOWER_ALIASES:
+            canonical = _LOWER_ALIASES[lowered]
             reason = "alias_match"
         else:
             canonical = "Uncategorized"

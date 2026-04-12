@@ -81,10 +81,6 @@ Keyed by `student → concept → mastery_score + identified_misconceptions[]`
 - ✓ LLM prompt enforces structured JSON output and handles failure modes
 - ✓ Mastery score is thoughtful — not just raw accuracy
 
-$env:OPENROUTER_API_KEY="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"
+---
 
-$env:OPENROUTER_MODEL="qwen/qwen3-coder:free"
-
-$env:PYTHONPATH="."
-
-venv\Scripts\python -m src.api_server
+.\venv\Scripts\python -m src.api_server
