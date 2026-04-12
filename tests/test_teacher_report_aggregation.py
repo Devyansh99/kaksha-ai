@@ -3,6 +3,8 @@ from src.pipeline.report_aggregation import (
     build_cohort_summary,
     compute_mastery_score,
 )
+from src.pipeline.report_pipeline import build_teacher_report
+from src.pipeline.report_writer import write_teacher_report
 
 
 def test_mastery_score_is_bounded_and_deterministic() -> None:
@@ -128,3 +130,45 @@ def test_cohort_summary_ranking_is_deterministic() -> None:
     assert first["avg_confidence"] == 0.7
 
     assert [item["label"] for item in summary_first["Algebra"]] == ["C", "D"]
+
+
+def test_report_json_is_deterministic(tmp_path) -> None:
+    rows = [
+        {
+            "student_id": "S-1",
+            "concept": "Fractions",
+            "question_text": "1/2 + 1/4 = ?",
+            "student_answer": "2/6",
+            "misconceptions": [{"label": "Denominator", "rationale": "r", "confidence": 0.8}],
+            "status": "ok",
+        },
+        {
+            "student_id": "S-2",
+            "concept": "Fractions",
+            "question_text": "1/3 + 1/6 = ?",
+            "student_answer": "2/9",
+            "misconceptions": [{"label": "Structure", "rationale": "r", "confidence": 0.5}],
+            "status": "json_repaired",
+        },
+        {
+            "student_id": "S-3",
+            "concept": "Fractions",
+            "question_text": "1/3 + 1/3 = ?",
+            "student_answer": "2/6",
+            "misconceptions": [],
+            "status": "retry_exhausted",
+        },
+    ]
+
+    report_one = build_teacher_report(rows)
+    report_two = build_teacher_report(rows)
+    assert report_one == report_two
+    assert report_one["metadata"]["rows_excluded_retry_exhausted"] == 1
+
+    first_path = tmp_path / "first.json"
+    second_path = tmp_path / "second.json"
+
+    write_teacher_report(report_one, str(first_path))
+    write_teacher_report(report_two, str(second_path))
+
+    assert first_path.read_text(encoding="utf-8") == second_path.read_text(encoding="utf-8")
