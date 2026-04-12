@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Contracts and Cleaning** - Build robust ingestion, schema validation, normalization, and incorrect-row filtering.
  (completed 2026-04-12)
-- [ ] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience.
+- [x] **Phase 2: Resilient Misconception Extraction** - Detect misconceptions through strict JSON LLM flows with retry/repair/fallback resilience. (completed 2026-04-12)
 - [ ] **Phase 3: Teacher Report and Aggregation** - Convert analyzed rows into mastery metrics and deterministic teacher report outputs.
 - [ ] **Phase 4: Quality Signals and Evaluation** - Improve output quality through taxonomy normalization, confidence scoring, and prompt strategy comparison.
 
@@ -47,7 +47,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 02-01-PLAN.md - strict JSON prompt contract and centralized OpenRouter client foundation
-- [ ] 02-02-PLAN.md - bounded retry, JSON repair, and deterministic fallback extraction orchestration
+- [x] 02-02-PLAN.md - bounded retry, JSON repair, and deterministic fallback extraction orchestration
 **UI hint**: no
 
 ### Phase 3: Teacher Report and Aggregation
@@ -81,6 +81,6 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
-| 2. Resilient Misconception Extraction | 1/2 | In Progress|  |
+| 2. Resilient Misconception Extraction | 2/2 | Complete   | 2026-04-12 |
 | 3. Teacher Report and Aggregation | 0/0 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
