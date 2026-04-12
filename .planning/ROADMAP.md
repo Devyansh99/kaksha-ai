@@ -60,7 +60,10 @@ Plans:
   2. User can generate a deterministic `teacher_report.json` structure on repeated runs.
   3. User can review cohort-level concept summaries showing top misconceptions.
   4. User can inspect concise evidence snippets (`question_text`, `student_answer`) attached to findings.
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 03-01-PLAN.md - deterministic mastery scoring and cohort ranking aggregation core
+- [ ] 03-02-PLAN.md - deterministic report assembly, writer output, and evidence snippet projection
 **UI hint**: no
 
 ### Phase 4: Quality Signals and Evaluation
@@ -83,5 +86,5 @@ Phases execute in numeric order: 1 -> 1.1 -> 2 -> 2.1 -> 3 -> 3.1 -> 4
 |-------|----------------|--------|-----------|
 | 1. Data Contracts and Cleaning | 2/2 | Complete    | 2026-04-12 |
 | 2. Resilient Misconception Extraction | 2/2 | Complete    | 2026-04-12 |
-| 3. Teacher Report and Aggregation | 0/0 | Not started | - |
+| 3. Teacher Report and Aggregation | 0/2 | Not started | - |
 | 4. Quality Signals and Evaluation | 0/0 | Not started | - |
