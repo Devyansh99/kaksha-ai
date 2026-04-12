@@ -1,5 +1,6 @@
 from src.pipeline.contracts import validate_row_contract
 from src.pipeline.cleaning import clean_row
+from src.pipeline.filtering import filter_incorrect_rows
 
 
 def _valid_row() -> dict:
@@ -61,3 +62,26 @@ def test_invalid_timestamp_is_dropped() -> None:
 
     assert cleaned is None
     assert reason == "invalid_timestamp"
+
+
+def test_only_incorrect_rows_forwarded() -> None:
+    row_false = _valid_row()
+    row_true = _valid_row()
+    row_true["is_correct"] = True
+
+    forwarded, dropped = filter_incorrect_rows([row_false, row_true])
+
+    assert len(forwarded) == 1
+    assert forwarded[0]["is_correct"] is False
+    assert dropped == []
+
+
+def test_invalid_is_correct_rows_are_dropped() -> None:
+    invalid_row = _valid_row()
+    invalid_row["is_correct"] = "false"
+
+    forwarded, dropped = filter_incorrect_rows([invalid_row])
+
+    assert forwarded == []
+    assert len(dropped) == 1
+    assert dropped[0]["reason_code"] == "invalid_is_correct"
