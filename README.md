@@ -11,6 +11,14 @@ cd d:\SEM_6\Kaksha
 
 Open `http://127.0.0.1:8000` and click **Analyze** in the web UI.
 
+## API (current)
+
+- `GET /` serves the web page.
+- `GET /health` returns `{ "ok": true }`.
+- `POST /analyze` accepts either a JSON array of row objects, or `{ "rows": [ ... ] }`.
+
+The current web UI calls `POST /analyze`.
+
 ## Notes on multi-teacher editing
 
 Current state: this app does **not** store or merge teacher annotations. The API is stateless, so concurrent requests are processed independently, and there is no profile-level locking, versioning, or conflict handling.
@@ -20,7 +28,7 @@ If I had more time: I would add persistent profile documents with optimistic con
 ## Data fetching decisions
 
 - I kept `/analyze` as a single end-to-end call because ingest, LLM extraction, and report aggregation are tightly coupled and are easiest to reason about as one pipeline run.
-- In the UI, health check and analysis are separate concerns (`/health` and `/analyze`) so operational status can be checked independently of expensive analysis work.
+- At the API level, health and analysis are separate concerns (`/health` and `/analyze`) so operational status can be checked independently of expensive analysis work.
 
 ## Extending SchoolConfig for subset visibility
 
