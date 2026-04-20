@@ -6,7 +6,7 @@ from typing import Any
 
 from src.pipeline.ingest import run_ingestion_from_rows
 from src.pipeline.misconception_extractor import extract_for_incorrect_rows
-from src.pipeline.openrouter_client import load_openrouter_config
+from src.pipeline.openrouter_client import load_llm_config
 from src.pipeline.report_pipeline import build_teacher_report
 from src.pipeline.report_writer import write_teacher_report
 
@@ -23,7 +23,7 @@ def analyze_rows(rows: list[dict[str, Any]], artifacts_dir: str = "artifacts") -
         drop_log_path=str(drop_log_path),
     )
 
-    config = load_openrouter_config()
+    config = load_llm_config()
     analyzed_rows = extract_for_incorrect_rows(incorrect_rows, config)
 
     status_counts = Counter(str(row.get("status", "unknown")) for row in analyzed_rows)

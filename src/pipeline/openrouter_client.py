@@ -6,11 +6,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib import request
 
-OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
+GEMINI_ENDPOINT_TEMPLATE = (
+    "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+)
 
 
 @dataclass(frozen=True)
-class OpenRouterConfig:
+class LLMConfig:
     api_key: str
     model: str
     timeout_seconds: float = 30.0
@@ -24,7 +26,7 @@ def _load_env_file() -> dict:
     """Load variables from .env file in project root."""
     env_file = Path(__file__).parent.parent.parent / ".env"
     env_vars = {}
-    
+
     if env_file.exists():
         with open(env_file, "r") as f:
             for line in f:
@@ -37,55 +39,105 @@ def _load_env_file() -> dict:
     return env_vars
 
 
-def load_openrouter_config() -> OpenRouterConfig:
-    # Load from .env file first, then fallback to environment variables
+def _normalize_gemini_model(value: str) -> str:
+    model = value.strip()
+    if model.startswith("models/"):
+        return model.split("models/", 1)[1]
+    return model
+
+
+def load_llm_config() -> LLMConfig:
+    """Load Gemini configuration from .env or process environment."""
     env_vars = _load_env_file()
-    
-    api_key = env_vars.get("OPENROUTER_API_KEY", "").strip() or os.getenv("OPENROUTER_API_KEY", "").strip()
-    model = env_vars.get("OPENROUTER_MODEL", "").strip() or os.getenv("OPENROUTER_MODEL", "").strip()
 
-    if not api_key:
-        raise ValueError("OPENROUTER_API_KEY is required in .env file or OPENROUTER_API_KEY env var")
-    if not model:
-        model = "qwen/qwen3-235b-a22b:free"
+    gemini_api_key = (
+        env_vars.get("GEMINI_API_KEY", "").strip()
+        or os.getenv("GEMINI_API_KEY", "").strip()
+        or env_vars.get("OPENROUTER_API_KEY", "").strip()
+        or os.getenv("OPENROUTER_API_KEY", "").strip()
+    )
+    gemini_model = (
+        env_vars.get("GEMINI_MODEL", "").strip()
+        or os.getenv("GEMINI_MODEL", "").strip()
+        or env_vars.get("OPENROUTER_MODEL", "").strip()
+        or os.getenv("OPENROUTER_MODEL", "").strip()
+    )
 
-    return OpenRouterConfig(api_key=api_key, model=model)
+    if not gemini_api_key:
+        raise ValueError("GEMINI_API_KEY is required in .env file or GEMINI_API_KEY env var")
+
+    model = _normalize_gemini_model(gemini_model) or "gemini-2.0-flash"
+    return LLMConfig(api_key=gemini_api_key, model=model)
 
 
-def build_request_payload(prompt: str, config: OpenRouterConfig) -> dict:
+def load_openrouter_config() -> LLMConfig:
+    """Backward-compatible alias kept for existing imports/tests."""
+    return load_llm_config()
+
+
+def build_request_payload(prompt: str, config: LLMConfig) -> dict:
     return {
-        "model": config.model,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": config.temperature,
-        "max_tokens": config.max_tokens,
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": config.temperature,
+            "maxOutputTokens": config.max_tokens,
+        },
     }
 
 
-def _send_json_request(payload: dict, config: OpenRouterConfig) -> dict:
+def _send_json_request(payload: dict, config: LLMConfig) -> dict:
     body = json.dumps(payload).encode("utf-8")
+    endpoint = GEMINI_ENDPOINT_TEMPLATE.format(model=config.model, api_key=config.api_key)
     req = request.Request(
-        OPENROUTER_ENDPOINT,
+        endpoint,
         data=body,
         method="POST",
         headers={
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {config.api_key}",
         },
     )
+
     try:
         with request.urlopen(req, timeout=config.timeout_seconds) as response:
-            return json.loads(response.read().decode("utf-8"))
+            raw_response = json.loads(response.read().decode("utf-8"))
+            text_parts: list[str] = []
+            for candidate in raw_response.get("candidates", []):
+                content = candidate.get("content", {})
+                parts = content.get("parts", [])
+                for part in parts:
+                    if isinstance(part, dict) and "text" in part:
+                        text_parts.append(str(part.get("text", "")))
+
+            return {
+                "choices": [
+                    {
+                        "message": {
+                            "content": "".join(text_parts),
+                        }
+                    }
+                ],
+                "provider_raw": raw_response,
+            }
     except Exception as e:
         print(f"DEBUG: API Error - {type(e).__name__}: {e}")
-        if hasattr(e, 'read'):
+        if hasattr(e, "read"):
             try:
-                error_body = e.read().decode('utf-8')
+                error_body = e.read().decode("utf-8")
                 print(f"DEBUG: Error Response: {error_body}")
-            except:
+            except Exception:
                 pass
         raise
 
 
-def call_openrouter(prompt: str, config: OpenRouterConfig) -> dict:
+def call_llm(prompt: str, config: LLMConfig) -> dict:
     payload = build_request_payload(prompt, config)
     return _send_json_request(payload, config)
+
+
+def call_openrouter(prompt: str, config: LLMConfig) -> dict:
+    """Backward-compatible alias kept for existing imports/tests."""
+    return call_llm(prompt, config)
+
+
+# Backward-compatible alias kept for existing imports/tests.
+OpenRouterConfig = LLMConfig

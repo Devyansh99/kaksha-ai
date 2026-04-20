@@ -5,7 +5,7 @@ from urllib.error import URLError
 
 from src.pipeline.json_resilience import deterministic_keyword_fallback, parse_or_repair_json
 from src.pipeline.misconception_prompt import build_misconception_prompt
-from src.pipeline.openrouter_client import OpenRouterConfig, call_openrouter
+from src.pipeline.openrouter_client import LLMConfig, call_openrouter
 
 
 def _extract_content(response: dict) -> str:
@@ -38,20 +38,13 @@ def _base_record(row: dict) -> dict:
     }
 
 
-def _retry_exhausted(row: dict, error_code: str) -> dict:
-    record = _base_record(row)
-    record.update(
-        {
-            "misconceptions": [],
-            "source": "llm",
-            "status": "retry_exhausted",
-            "error_code": error_code,
-        }
-    )
-    return record
+def _fallback_after_error(row: dict, error_code: str) -> dict:
+    fallback = deterministic_keyword_fallback(row)
+    fallback["error_code"] = error_code
+    return fallback
 
 
-def extract_misconceptions_for_row(row: dict, config: OpenRouterConfig) -> dict:
+def extract_misconceptions_for_row(row: dict, config: LLMConfig) -> dict:
     prompt = build_misconception_prompt(row)
     attempt_limit = config.max_retries + 1
 
@@ -76,22 +69,22 @@ def extract_misconceptions_for_row(row: dict, config: OpenRouterConfig) -> dict:
             if attempt < config.max_retries:
                 time.sleep(config.backoff_seconds * (attempt + 1))
                 continue
-            return _retry_exhausted(row, "timeout")
+            return _fallback_after_error(row, "timeout")
         except URLError:
             if attempt < config.max_retries:
                 time.sleep(config.backoff_seconds * (attempt + 1))
                 continue
-            return _retry_exhausted(row, "service_error")
+            return _fallback_after_error(row, "service_error")
         except Exception:
             if attempt < config.max_retries:
                 time.sleep(config.backoff_seconds * (attempt + 1))
                 continue
-            return _retry_exhausted(row, "service_error")
+            return _fallback_after_error(row, "service_error")
 
-    return _retry_exhausted(row, "service_error")
+    return _fallback_after_error(row, "service_error")
 
 
-def extract_for_incorrect_rows(rows: list[dict], config: OpenRouterConfig) -> list[dict]:
+def extract_for_incorrect_rows(rows: list[dict], config: LLMConfig) -> list[dict]:
     outputs: list[dict] = []
     for row in rows:
         outputs.append(extract_misconceptions_for_row(row, config))

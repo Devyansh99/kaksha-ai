@@ -35,20 +35,19 @@ def test_prompt_requires_json_only_contract() -> None:
 def test_openrouter_client_uses_env_config(monkeypatch) -> None:
     # Mock _load_env_file to return empty dict so environment variables are used
     monkeypatch.setattr("src.pipeline.openrouter_client._load_env_file", lambda: {})
-    
-    monkeypatch.setenv("OPENROUTER_API_KEY", "demo-key")
-    monkeypatch.setenv("OPENROUTER_MODEL", "qwen/qwen3-235b-a22b:free")
+
+    monkeypatch.setenv("GEMINI_API_KEY", "demo-key")
+    monkeypatch.setenv("GEMINI_MODEL", "gemini-2.0-flash")
 
     config = load_openrouter_config()
     assert config.api_key == "demo-key"
-    assert config.model == "qwen/qwen3-235b-a22b:free"
+    assert config.model == "gemini-2.0-flash"
 
     prompt = "Return only valid JSON"
     payload = build_request_payload(prompt, config)
-    assert payload["model"] == "qwen/qwen3-235b-a22b:free"
-    assert payload["messages"][0]["content"] == prompt
-    assert payload["temperature"] == config.temperature
-    assert payload["max_tokens"] == config.max_tokens
+    assert payload["contents"][0]["parts"][0]["text"] == prompt
+    assert payload["generationConfig"]["temperature"] == config.temperature
+    assert payload["generationConfig"]["maxOutputTokens"] == config.max_tokens
 
     captured = {}
 
@@ -62,8 +61,7 @@ def test_openrouter_client_uses_env_config(monkeypatch) -> None:
     response = call_openrouter(prompt, config)
     assert response["id"] == "mock-response"
     assert captured["config"].api_key == "demo-key"
-    assert captured["payload"]["model"] == "qwen/qwen3-235b-a22b:free"
-    assert captured["payload"]["messages"][0]["content"] == prompt
+    assert captured["payload"]["contents"][0]["parts"][0]["text"] == prompt
 
 
 def test_malformed_json_repair_then_fallback() -> None:
@@ -139,7 +137,7 @@ def test_retry_timeout_is_bounded_and_non_crashing(monkeypatch) -> None:
     )
 
     assert attempts["count"] == 3
-    assert output["source"] == "llm"
-    assert output["status"] == "retry_exhausted"
+    assert output["source"] == "fallback"
+    assert output["status"] == "fallback_used"
     assert output["error_code"] == "timeout"
-    assert output["misconceptions"] == []
+    assert len(output["misconceptions"]) >= 1

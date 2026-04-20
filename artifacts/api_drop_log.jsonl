@@ -1,0 +1,1 @@
+{"row_index": 1, "reason_code": "invalid_timestamp", "field": "timestamp", "row": {"student_id": "S-502", "subject": "Math", "concept": "Fractions", "question_text": "bad ts row", "correct_answer": "1/2", "student_answer": "1/3", "is_correct": false, "timestamp": "bad-ts"}}
